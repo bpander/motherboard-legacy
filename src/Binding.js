@@ -1,15 +1,5 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(factory);
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.Binding = factory();
-    }
-}(this, function (require) {
+define(['./EventEmitter'], function (EventEmitter) {
     'use strict';
-
-    var EventEmitter = require('motherboard/EventEmitter');
 
 
     function Binding (target, type, handler) {
@@ -63,4 +53,4 @@
 
 
     return Binding;
-}));
+});

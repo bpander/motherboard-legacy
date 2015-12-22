@@ -1,20 +1,13 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(factory);
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.motherboard = factory();
-    }
-}(this, function (require) {
+define(function () {
     'use strict';
 
+
     var motherboard = {
-        App: require('motherboard/App'),
-        Binding: require('motherboard/Binding'),
-        Component: require('motherboard/Component'),
-        Dispatcher: require('motherboard/Dispatcher'),
-        Parser: require('motherboard/Parser')
+        App: require('./App'),
+        Binding: require('./Binding'),
+        Component: require('./Component'),
+        Dispatcher: require('./Dispatcher'),
+        Parser: require('./Parser')
     };
 
 
@@ -41,4 +34,4 @@
 
 
     return motherboard;
-}));
+});

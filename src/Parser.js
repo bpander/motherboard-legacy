@@ -1,17 +1,5 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(factory);
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.Parser = factory();
-    }
-}(this, function (require) {
+define(['./App', './Dispatcher', './Component'], function (App, Dispatcher, Component) {
     'use strict';
-
-    var App = require('motherboard/App');
-    var Dispatcher = require('motherboard/Dispatcher');
-    var Component = require('motherboard/Component');
 
 
     var Parser = {};
@@ -175,4 +163,4 @@
 
 
     return Parser;
-}));
+});

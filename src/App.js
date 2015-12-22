@@ -1,15 +1,5 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(factory);
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.App = factory();
-    }
-}(this, function (require) {
+define(['./Dispatcher'], function (Dispatcher) {
     'use strict';
-
-    var Dispatcher = require('motherboard/Dispatcher');
 
 
     function App (element, options) {
@@ -38,4 +28,4 @@
 
 
     return App;
-}));
+});

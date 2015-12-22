@@ -1,16 +1,5 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(factory);
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.Dispatcher = factory();
-    }
-}(this, function (require) {
+define(['./Component', './polyfills/Array.prototype.find'], function (Component) {
     'use strict';
-
-    require('motherboard/polyfills/Array.prototype.find');
-    var Component = require('motherboard/Component');
 
 
     function Dispatcher (element, options) {
@@ -39,4 +28,4 @@
 
 
     return Dispatcher;
-}));
+});
