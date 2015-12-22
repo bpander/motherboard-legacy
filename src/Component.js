@@ -9,7 +9,6 @@
 }(this, function (require) {
     'use strict';
 
-    var deepmerge = require('motherboard/vendor/deepmerge/index');
     var Binding = require('motherboard/Binding');
     var EventEmitter = require('motherboard/EventEmitter');
 
@@ -19,7 +18,7 @@
 
         this.element = element;
 
-        this.options = deepmerge(this.constructor.options || {}, options || {});
+        this.options = Object.assign({}, this.constructor.options, options);
 
         this.bindings = [];
 
