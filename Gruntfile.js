@@ -35,15 +35,28 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+
+
+        uglify: {
+            options: {
+
+            },
+            dist: {
+                files: {
+                    'dist/motherboard.min.js': ['dist/motherboard.js']
+                }
+            }
         }
     });
 
 
     // Load plugins
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
 
     // Define tasks
-    grunt.registerTask('default', ['requirejs:dist']);
+    grunt.registerTask('default', ['requirejs:dist', 'uglify:dist']);
 
 };

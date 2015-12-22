@@ -1,6 +1,8 @@
 {
   "name": "motherboard",
   "version": "0.0.1",
+  "description": "A JavaScript architecture boilerplate.",
+  "main": "dist/motherboard.js",
   "homepage": "https://github.com/bpander/motherboard",
   "authors": [
     "Bradley Anderson <brad.anderson87@gmail.com>"
