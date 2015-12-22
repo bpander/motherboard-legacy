@@ -1,0 +1,16 @@
+{
+  "name": "motherboard",
+  "version": "0.0.1",
+  "homepage": "https://github.com/bpander/motherboard",
+  "authors": [
+    "Bradley Anderson <brad.anderson87@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
