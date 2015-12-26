@@ -39,12 +39,18 @@ module.exports = function(grunt) {
 
 
         uglify: {
-            options: {
-
-            },
             dist: {
                 files: {
                     'dist/motherboard.min.js': ['dist/motherboard.js']
+                }
+            }
+        },
+
+
+        jsdoc2md: {
+            dist: {
+                files: {
+                    'README.md': 'dist/motherboard.js'
                 }
             }
         }
@@ -54,9 +60,11 @@ module.exports = function(grunt) {
     // Load plugins
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-jsdoc-to-markdown');
 
 
     // Define tasks
     grunt.registerTask('default', ['requirejs:dist', 'uglify:dist']);
+    grunt.registerTask('docs', ['jsdoc2md']);
 
 };
