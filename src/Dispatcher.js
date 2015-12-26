@@ -5,9 +5,7 @@ define(['./Component', './polyfills/Array.prototype.find'], function (Component)
     /**
      * @constructor Dispatcher
      * @extends module:motherboard~Component
-     * @classdesc  The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete interaction, e.g. an ajax-form that lives in a modal that needs to close the modal on success.
-     * @param {HTMLElement} element     - The root HTML element to use as the Dispatcher.
-     * @param {Object}      [options]   - Overrides to the constructor.options object
+     * @classdesc  The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete set of behaviors, e.g. an ajax-form that lives in a modal that needs to close the modal on success; if the modal is closed while the ajax-form is submitting, the ajax-form is aborted; etc.
      */
     function Dispatcher (element, options) {
         Component.call(this, element, options);

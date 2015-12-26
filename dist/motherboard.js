@@ -62,7 +62,7 @@ Component = function (Binding) {
        * @see [bpander/EventEmitter]{@link https://github.com/bpander/EventEmitter}
        * @classdesc The Component class is meant to be used as a base class for basic UI Components. For example, a carousel or a cross-fader or an ajax-form could each merit their own Component extension. A Component extension is meant to be standalone and only care about itself and its members. For cases where different Components need to "talk" to each other, a {@link module:motherboard~Dispatcher} should be used to handle cross-module communication.
        * @param {HTMLElement} element     - The root HTML element to use as the Component.
-       * @param {Object}      [options]   - Overrides to the constructor.options object
+       * @param {Object}      [options]   - Optional. Overrides to the Constructor.options object.
        * @example
   // Defining a Component
   
@@ -112,6 +112,18 @@ Component = function (Binding) {
   Component.prototype = Object.create(EventEmitter.prototype);
   var proto = Component.prototype;
   proto.constructor = Component;
+  /**
+       * The configurable options for the Component and their defaults.
+       *
+       * @name options
+       * @memberof module:motherboard~Component
+       * @type {Object}
+       * @example
+  CarouselComponent.options = {
+      activeSlideClass: 'active'
+  };
+       */
+  Component.options = {};
   proto.init = function () {
   };
   proto.destroy = function () {
@@ -175,9 +187,7 @@ Dispatcher = function (Component) {
   /**
    * @constructor Dispatcher
    * @extends module:motherboard~Component
-   * @classdesc  The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete interaction, e.g. an ajax-form that lives in a modal that needs to close the modal on success.
-   * @param {HTMLElement} element     - The root HTML element to use as the Dispatcher.
-   * @param {Object}      [options]   - Overrides to the constructor.options object
+   * @classdesc  The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete set of behaviors, e.g. an ajax-form that lives in a modal that needs to close the modal on success; if the modal is closed while the ajax-form is submitting, the ajax-form is aborted; etc.
    */
   function Dispatcher(element, options) {
     Component.call(this, element, options);

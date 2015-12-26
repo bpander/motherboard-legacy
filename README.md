@@ -4,8 +4,8 @@
 * [motherboard](#module_motherboard)
     * [~Component](#module_motherboard..Component) ⇐ <code>EventEmitter</code>
         * [new Component(element, [options])](#new_module_motherboard..Component_new)
+        * [.options](#module_motherboard..Component.options) : <code>Object</code>
     * [~Dispatcher](#module_motherboard..Dispatcher) ⇐ <code>[Component](#module_motherboard..Component)</code>
-        * [new Dispatcher(element, [options])](#new_module_motherboard..Dispatcher_new)
         * [.getComponent(T)](#module_motherboard..Dispatcher+getComponent) ⇒ <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code>
 
 <a name="module_motherboard..Component"></a>
@@ -15,13 +15,18 @@ The Component class is meant to be used as a base class for basic UI Components.
 **Kind**: inner class of <code>[motherboard](#module_motherboard)</code>  
 **Extends:** <code>EventEmitter</code>  
 **See**: [bpander/EventEmitter](https://github.com/bpander/EventEmitter)  
+
+* [~Component](#module_motherboard..Component) ⇐ <code>EventEmitter</code>
+    * [new Component(element, [options])](#new_module_motherboard..Component_new)
+    * [.options](#module_motherboard..Component.options) : <code>Object</code>
+
 <a name="new_module_motherboard..Component_new"></a>
 #### new Component(element, [options])
 
 | Param | Type | Description |
 | --- | --- | --- |
 | element | <code>HTMLElement</code> | The root HTML element to use as the Component. |
-| [options] | <code>Object</code> | Overrides to the constructor.options object |
+| [options] | <code>Object</code> | Optional. Overrides to the Constructor.options object. |
 
 **Example**  
 ```js
@@ -66,25 +71,23 @@ The Component class is meant to be used as a base class for basic UI Components.
       ...
   </div>
 ```
+<a name="module_motherboard..Component.options"></a>
+#### Component.options : <code>Object</code>
+The configurable options for the Component and their defaults.
+
+**Kind**: static property of <code>[Component](#module_motherboard..Component)</code>  
+**Example**  
+```js
+CarouselComponent.options = {
+      activeSlideClass: 'active'
+  };
+```
 <a name="module_motherboard..Dispatcher"></a>
 ### motherboard~Dispatcher ⇐ <code>[Component](#module_motherboard..Component)</code>
-The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete interaction, e.g. an ajax-form that lives in a modal that needs to close the modal on success.
+The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete set of behaviors, e.g. an ajax-form that lives in a modal that needs to close the modal on success; if the modal is closed while the ajax-form is submitting, the ajax-form is aborted; etc.
 
 **Kind**: inner class of <code>[motherboard](#module_motherboard)</code>  
 **Extends:** <code>[Component](#module_motherboard..Component)</code>  
-
-* [~Dispatcher](#module_motherboard..Dispatcher) ⇐ <code>[Component](#module_motherboard..Component)</code>
-    * [new Dispatcher(element, [options])](#new_module_motherboard..Dispatcher_new)
-    * [.getComponent(T)](#module_motherboard..Dispatcher+getComponent) ⇒ <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code>
-
-<a name="new_module_motherboard..Dispatcher_new"></a>
-#### new Dispatcher(element, [options])
-
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | The root HTML element to use as the Dispatcher. |
-| [options] | <code>Object</code> | Overrides to the constructor.options object |
-
 <a name="module_motherboard..Dispatcher+getComponent"></a>
 #### dispatcher.getComponent(T) ⇒ <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code>
 Returns the first child component instance of the specified type or `null` if none are found.

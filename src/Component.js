@@ -8,7 +8,7 @@ define(['./Binding'], function (Binding) {
      * @see [bpander/EventEmitter]{@link https://github.com/bpander/EventEmitter}
      * @classdesc The Component class is meant to be used as a base class for basic UI Components. For example, a carousel or a cross-fader or an ajax-form could each merit their own Component extension. A Component extension is meant to be standalone and only care about itself and its members. For cases where different Components need to "talk" to each other, a {@link module:motherboard~Dispatcher} should be used to handle cross-module communication.
      * @param {HTMLElement} element     - The root HTML element to use as the Component.
-     * @param {Object}      [options]   - Overrides to the constructor.options object
+     * @param {Object}      [options]   - Optional. Overrides to the Constructor.options object.
      * @example
 // Defining a Component
 
@@ -62,6 +62,20 @@ Parser.create(CarouselComponent, document.createElement('div'));
     Component.prototype = Object.create(EventEmitter.prototype);
     var proto = Component.prototype;
     proto.constructor = Component;
+
+
+    /**
+     * The configurable options for the Component and their defaults.
+     *
+     * @name options
+     * @memberof module:motherboard~Component
+     * @type {Object}
+     * @example
+CarouselComponent.options = {
+    activeSlideClass: 'active'
+};
+     */
+    Component.options = {};
 
 
     proto.init = function () {
