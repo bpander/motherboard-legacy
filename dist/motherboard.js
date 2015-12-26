@@ -4,60 +4,21 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.motherboard = factory();
+        root.motherboard = factory(function (name) {
+            return root[name];
+        });
     }
 }(this, function (require) {
     'use strict';
-var EventEmitter, Binding, Component, polyfills_Arrayprototypefind, Dispatcher, App, Parser, motherboard;
-EventEmitter = function () {
-  function EventEmitter() {
-    this._bindings = {};
-  }
-  var proto = EventEmitter.prototype;
-  proto.on = function (type, callback) {
-    if (callback instanceof Function === false) {
-      throw new Error('Callback is wrong type. Expected Function and got ' + typeof callback);
-    }
-    var bindings = this._bindings[type];
-    if (bindings === undefined) {
-      bindings = [];
-      this._bindings[type] = bindings;
-    }
-    bindings.push(callback);
-  };
-  proto.off = function (type, callback) {
-    var bindings = this._bindings[type];
-    if (bindings === undefined) {
-      return;
-    }
-    var index = bindings.indexOf(callback);
-    if (index === -1) {
-      return;
-    }
-    bindings.splice(index, 1);
-    if (bindings.length === 0) {
-      delete this._bindings[type];
-    }
-  };
-  proto.emit = function (type, data) {
-    var bindings = this._bindings[type];
-    if (bindings === undefined) {
-      return;
-    }
-    var i;
-    var l = bindings.length;
-    for (i = 0; i < l; i++) {
-      bindings[i](new XEvent(type, this, data));
-    }
-  };
-  function XEvent(type, target, data) {
-    this.type = type;
-    this.target = target;
-    this.data = data;
-  }
-  return EventEmitter;
-}();
-Binding = function (EventEmitter) {
+
+    var EventEmitter = require('EventEmitter');
+
+
+    /**
+     * @module motherboard
+     */
+var Binding, Component, polyfills_Arrayprototypefind, Dispatcher, App, Parser, motherboard;
+Binding = function () {
   function Binding(target, type, handler) {
     this.target = target;
     this.type = type;
@@ -93,8 +54,55 @@ Binding = function (EventEmitter) {
     this.isEnabled = false;
   };
   return Binding;
-}(EventEmitter);
-Component = function (Binding, EventEmitter) {
+}();
+Component = function (Binding) {
+  /**
+       * @class Component
+       * @extends EventEmitter
+       * @see [bpander/EventEmitter]{@link https://github.com/bpander/EventEmitter}
+       * @classdesc The Component class is meant to be used as a base class for basic UI Components. For example, a carousel or a cross-fader or an ajax-form could each merit their own Component extension. A Component extension is meant to be standalone and only care about itself and its members. For cases where different Components need to "talk" to each other, a {@link module:motherboard~Dispatcher} should be used to handle cross-module communication.
+       * @param {HTMLElement} element     - The root HTML element to use as the Component.
+       * @param {Object}      [options]   - Overrides to the constructor.options object
+       * @example
+  // Defining a Component
+  
+  var Component = require('motherboard').Component;
+  
+  
+  function CarouselComponent (element, options) {
+      Component.call(this, element, options);
+  
+      this.slideCount = 0;
+  
+      this.index = 0;
+  
+  }
+  
+  
+  CarouselComponent.options = {
+      activeSlideClass: 'active'
+  };
+  
+  
+  Object.assign(CarouselComponent.prototype, Component.prototype, {
+      constructor: CarouselComponent,
+  
+      init: function () {
+  
+      }
+  });
+  
+       * @example
+  // Instantating via the Parser
+  var Parser = require('motherboard').Parser;
+  Parser.create(CarouselComponent, document.createElement('div'));
+  
+       * @example
+  <!-- Instantiating via data attribute -->
+  <div data-component="CarouselComponent" data-options='{ "activeSlideClass": "carousel-slide_active" }'>
+      ...
+  </div>
+       */
   function Component(element, options) {
     EventEmitter.call(this);
     this.element = element;
@@ -140,7 +148,7 @@ Component = function (Binding, EventEmitter) {
     });
   };
   return Component;
-}(Binding, EventEmitter);
+}(Binding);
 if (!Array.prototype.find) {
   Array.prototype.find = function (predicate) {
     if (this === null) {
@@ -164,6 +172,13 @@ if (!Array.prototype.find) {
 }
 polyfills_Arrayprototypefind = undefined;
 Dispatcher = function (Component) {
+  /**
+   * @constructor Dispatcher
+   * @extends module:motherboard~Component
+   * @classdesc  The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete interaction, e.g. an ajax-form that lives in a modal that needs to close the modal on success.
+   * @param {HTMLElement} element     - The root HTML element to use as the Dispatcher.
+   * @param {Object}      [options]   - Overrides to the constructor.options object
+   */
   function Dispatcher(element, options) {
     Component.call(this, element, options);
     this.components = [];
@@ -171,6 +186,32 @@ Dispatcher = function (Component) {
   Dispatcher.prototype = Object.create(Component.prototype);
   var proto = Dispatcher.prototype;
   proto.constructor = Dispatcher;
+  /**
+       * Returns the first child component instance of the specified type or `null` if none are found.
+       * 
+       * @method getComponent
+       * @memberOf module:motherboard~Dispatcher
+       * @instance
+       * @param  {T} T  - A component type to search for.
+       * @return {module:motherboard~Component|null}  A component instance of type T.
+       * @example
+  <!-- given this markup -->
+  <div data-dispatcher="ExampleDispatcher">
+  
+      <form data-component="FormComponent" id="first">
+      </form>
+  
+      <form data-component="FormComponent" id="second">
+      </form>
+  
+  </div>
+       * @example
+  var exampleDispatcher = app.getDispatcher(ExampleDispatcher);
+  exampleDispatcher.getComponent(FormComponent); // will return the FormComponent instance for the '#first' element
+  exampleDispatcher.getComponents(FormComponent); // will return both FormComponent instances
+  exampleDispatcher.getComponent(CarouselComponent); // will return `null`
+  
+       */
   proto.getComponent = function (T) {
     return this.components.find(function (component) {
       return component.constructor === T;
