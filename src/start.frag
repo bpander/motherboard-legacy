@@ -4,7 +4,16 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.motherboard = factory();
+        root.motherboard = factory(function (name) {
+            return root[name];
+        });
     }
 }(this, function (require) {
     'use strict';
+
+    var EventEmitter = require('EventEmitter');
+
+
+    /**
+     * @module motherboard
+     */

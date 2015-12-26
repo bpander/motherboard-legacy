@@ -1,3 +1,7 @@
 require.config({
-    baseUrl: 'src'
+    baseUrl: 'src',
+
+    paths: {
+        EventEmitter: '../bower_components/EventEmitter/dist/EventEmitter'
+    }
 });

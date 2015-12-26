@@ -17,5 +17,8 @@
   ],
   "devDependencies": {
     "requirejs": "2.1.22"
+  },
+  "dependencies": {
+    "EventEmitter": "bpander-EventEmitter#~0.0.1"
   }
 }

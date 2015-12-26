@@ -1,4 +1,4 @@
-define(['./Binding', './EventEmitter'], function (Binding, EventEmitter) {
+define(['./Binding'], function (Binding) {
     'use strict';
 
 
