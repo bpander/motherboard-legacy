@@ -1,121 +1,58 @@
-<a name="module_motherboard"></a>
-## motherboard
+# motherboard
 
-* [motherboard](#module_motherboard)
-    * [~Component](#module_motherboard..Component) ⇐ <code>EventEmitter</code>
-        * [new Component(element, [options])](#new_module_motherboard..Component_new)
-        * [.options](#module_motherboard..Component.options) : <code>Object</code>
-    * [~Dispatcher](#module_motherboard..Dispatcher) ⇐ <code>[Component](#module_motherboard..Component)</code>
-        * [.getComponent(T)](#module_motherboard..Dispatcher+getComponent) ⇒ <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code>
+Motherboard is a small, extensible boilerplate for client-side JavaScript applications. It's designed to make common architecture issues (separation of concerns, cross-module communication) easier to handle and common tasks (querying elements, binding events) more concise (read less tedious).
 
-<a name="module_motherboard..Component"></a>
-### motherboard~Component ⇐ <code>EventEmitter</code>
-The Component class is meant to be used as a base class for basic UI Components. For example, a carousel or a cross-fader or an ajax-form could each merit their own Component extension. A Component extension is meant to be standalone and only care about itself and its members. For cases where different Components need to "talk" to each other, a [Dispatcher](#module_motherboard..Dispatcher) should be used to handle cross-module communication.
+## Installation
+`bower install motherboard --save`
 
-**Kind**: inner class of <code>[motherboard](#module_motherboard)</code>  
-**Extends:** <code>EventEmitter</code>  
-**See**: [bpander/EventEmitter](https://github.com/bpander/EventEmitter)  
+## Getting Started
+A set of base classes.
 
-* [~Component](#module_motherboard..Component) ⇐ <code>EventEmitter</code>
-    * [new Component(element, [options])](#new_module_motherboard..Component_new)
-    * [.options](#module_motherboard..Component.options) : <code>Object</code>
+### Differences from MVC Frameworks
 
-<a name="new_module_motherboard..Component_new"></a>
-#### new Component(element, [options])
+#### Addresses Complex UI behaviors
+Angular, React, and similar frameworks are good for RESTful applications (updating views as data changes). What they don't seem to address is complex behaviors between UI components, e.g. clicking a button causes a specific panel on a specific accordion to expand and navigate an inner carousel to a specific slide. Motherboard is meant to make coordinating between disparate components easy.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | The root HTML element to use as the Component. |
-| [options] | <code>Object</code> | Optional. Overrides to the Constructor.options object. |
+#### Not monolithic
+Motherboard is meant to be a foundation to build on. As such, it doesn't force a specific Router or templating engine on you. You can use whatever components fit your project, and if one stops being good, you can easily swap it out for a different (better) one.
 
-**Example**  
-```js
-// Defining a Component
-  
-  var Component = require('motherboard').Component;
-  
-  
-  function CarouselComponent (element, options) {
-      Component.call(this, element, options);
-  
-      this.slideCount = 0;
-  
-      this.index = 0;
-  
-  }
-  
-  
-  CarouselComponent.options = {
-      activeSlideClass: 'active'
-  };
-  
-  
-  Object.assign(CarouselComponent.prototype, Component.prototype, {
-      constructor: CarouselComponent,
-  
-      init: function () {
-  
-      }
-  });
+## Examples
+### Querying elements
+```html
+<div class="DemoComponent">
+  <div data-tag="DemoComponent:foo"></div>
+  <div data-tag="DemoComponent:foo"></div>
+</div>
 ```
-**Example**  
-```js
-// Instantating via the Parser
-  var Parser = require('motherboard').Parser;
-  Parser.create(CarouselComponent, document.createElement('div'));
+```javascript
+// DemoComponent.js
+this.findWithTag('DemoComponent:foo'); // Returns the first element found or null
+this.findAllWithTag('DemoComponent:foo'); // Returns all elements found as a NodeList
 ```
-**Example**  
-```js
-<!-- Instantiating via data attribute -->
-  <div data-component="CarouselComponent" data-options='{ "activeSlideClass": "carousel-slide_active" }'>
-      ...
-  </div>
+
+### Referencing child components
+```html
+<div data-dispatcher="SomeDispatcher">
+  <div data-component="DemoComponent"></div>
+  <div data-component="DemoComponent"></div>
+</div>
 ```
-<a name="module_motherboard..Component.options"></a>
-#### Component.options : <code>Object</code>
-The configurable options for the Component and their defaults.
-
-**Kind**: static property of <code>[Component](#module_motherboard..Component)</code>  
-**Example**  
-```js
-CarouselComponent.options = {
-      activeSlideClass: 'active'
-  };
+```javascript
+// SomeDispatcher.js
+this.getComponent(DemoComponent); // Returns first instance found or null
+this.getComponents(DemoComponent); // Returns an array of all DemoComponent instances within the SomeDispatcher element
 ```
-<a name="module_motherboard..Dispatcher"></a>
-### motherboard~Dispatcher ⇐ <code>[Component](#module_motherboard..Component)</code>
-The Dispatcher class is meant to be used as a base class for complex, multi-component logic. Dispatcher extensions handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete set of behaviors, e.g. an ajax-form that lives in a modal that needs to close the modal on success; if the modal is closed while the ajax-form is submitting, the ajax-form is aborted; etc.
 
-**Kind**: inner class of <code>[motherboard](#module_motherboard)</code>  
-**Extends:** <code>[Component](#module_motherboard..Component)</code>  
-<a name="module_motherboard..Dispatcher+getComponent"></a>
-#### dispatcher.getComponent(T) ⇒ <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code>
-Returns the first child component instance of the specified type or `null` if none are found.
-
-**Kind**: instance method of <code>[Dispatcher](#module_motherboard..Dispatcher)</code>  
-**Returns**: <code>[Component](#module_motherboard..Component)</code> &#124; <code>null</code> - A component instance of type T.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| T | <code>T</code> | A component type to search for. |
-
-**Example**  
-```js
-<!-- given this markup -->
-  <div data-dispatcher="ExampleDispatcher">
-  
-      <form data-component="FormComponent" id="first">
-      </form>
-  
-      <form data-component="FormComponent" id="second">
-      </form>
-  
-  </div>
+### Binding events
+```javascript
+this.createBinding(this.element, 'submit', _handleSubmit);
+this.createBinding(this.getComponent(FormComponent), FormComponent.EVENT.SUBMIT, _handleSubmit);
+this.enable(); // Enables all bindings
+this.disable(); // Disables all bindings
 ```
-**Example**  
-```js
-var exampleDispatcher = app.getDispatcher(ExampleDispatcher);
-  exampleDispatcher.getComponent(FormComponent); // will return the FormComponent instance for the '#first' element
-  exampleDispatcher.getComponents(FormComponent); // will return both FormComponent instances
-  exampleDispatcher.getComponent(CarouselComponent); // will return `null`
+
+### Triggering Custom Events
+```javascript
+// FormComponent.js
+this.emit(FormComponent.EVENT.SUBMIT, { request: request });
 ```
