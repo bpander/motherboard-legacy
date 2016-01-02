@@ -5,8 +5,32 @@ Motherboard is a small, extensible boilerplate for client-side JavaScript applic
 ## Installation
 `bower install motherboard --save`
 
+```javascript
+// Via CommonJS
+var motherboard = require('motherboard');
+var Component = require('motherboard').Component;
+```
+```html
+<!-- Via old school script tags -->
+<script src="bower_components/motherboard/dist/motherboard.js"></script>
+<script>
+(function () {
+    var Component = motherboard.Component;
+}());
+</script>
+```
+
 ## Getting Started
-A set of base classes.
+Motherboard is essentially three base classes (`Component`, `Dispatcher`, and `App`) and a static class (`Parser`).
+
+**Component** - Used for basic UI Components (a carousel or a modal or an ajax-form could each merit their own Component extension). A Component is meant to be standalone and only care about itself and its members. For cases where different Components need to "talk" to each other, a *Dispatcher* is used to handle cross-module communication.
+
+**Dispatcher** - (extends Component) Used for complex, multi-component logic. Dispatchers handle cross-module communication between child Components. The scope of a Dispatcher should be limited to a discrete set of behaviors. For example, let's say there's an ajax-form that lives in a modal that needs to close the modal on success or, if the modal is closed while the ajax-form is submitting, the ajax-form is aborted. One Dispatcher would be created to handle that set of (thematically linked) behaviors.
+
+**App** - (extends Dispatcher) The head honcho. An App resolves cases where Dispatchers need to communicate with each other or other top-level application logic, e.g. calling picturefill on responsive images whenever new ones are added to the DOM.
+
+**Parser** - A static class that's responsible for turning HTML elements into motherboard objects and destroying those motherboard objects when the elements are removed.
+
 
 ### Differences from MVC Frameworks
 
@@ -17,6 +41,10 @@ Angular, React, and similar frameworks are good for RESTful applications (updati
 Motherboard is meant to be a foundation to build on. As such, it doesn't force a specific Router or templating engine on you. You can use whatever components are appropriate for your project, and if one stops being good, you can easily swap it out for a different (better) one.
 
 ## Examples
+
+Dispatchers and Components can be instantiated via data attributes (`data-dispatcher` and `data-component` respectively). Specific elements can be "tagged" with a `data-tag` attribute.
+
+<small>**Note:** The `data-tag="ClassName:propertyName"` isn't a required naming convention, just one I've found helpful.</small>
 
 ```html
 <div data-dispatcher="DemoDispatcher" data-options='{ "someConfigurableValue": "bar" }'>
@@ -29,33 +57,29 @@ Motherboard is meant to be a foundation to build on. As such, it doesn't force a
     </div>
     <div data-component="FaderComponent" data-tag="DemoDispatcher:faderComponent"> ... </div>
     <ul data-tag="DemoDispatcher:listOfDynamicallyCreatedComponents"></ul>
-    <div data-tag="DemoDispatcher:someCollectionOfElements"></div>
-    <div data-tag="DemoDispatcher:someCollectionOfElements"></div>
-    <div data-tag="DemoDispatcher:someCollectionOfElements"></div>
 </div>
 ```
 
 ```javascript
 // Initializing an application
 motherboard
-    // Map component definitions to a string identifier
     .components({
-        FormComponent: require('components/FormComponent'), // CommonJS
-        FaderComponent: window.FaderComponent // From a global scope
+        // Map component definitions to a string identifier
+        FormComponent: require('components/FormComponent'), // CommonJS way
+        FaderComponent: window.FaderComponent // global scope way
     })
-    // Do the same with dispatchers
     .dispatchers({
+        // Do the same with dispatchers
         DemoDispatcher: (function () {
             ...
             return DemoDispatcher;
-        }()) // IIFE
+        }()) // IIFE way
     })
-    // Mount the application (we set it to window.app so we can access it more easily from the console)
-    .mount(window.app = new App());
+    .mount(window.app = new App()); // Mount the application (we set it to window.app so we can access it more easily from dev tools)
 
 
 // Dispatcher definition example
-// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Custom_objects to learn about ES5 class extension
+// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Custom_objects to learn about pre-ES6 JS "classes"
 function DemoDispatcher (element, options) {
     Dispatcher.call(this, element, options);
 
