@@ -108,7 +108,7 @@ define(['./App', './Dispatcher', './Component'], function (App, Dispatcher, Comp
         if (T === undefined) {
             throw new Error('Could not find component named "' + name + '" in component dictionary.');
         }
-        var instance = new T(element, JSON.parse(element.dataset.options || '{}'));
+        var instance = new T(element, JSON.parse(element.dataset.options || null));
         var parentElement = element;
         var appElement = Parser._app.element;
         var dispatcher;
@@ -130,14 +130,15 @@ define(['./App', './Dispatcher', './Component'], function (App, Dispatcher, Comp
         if (T === undefined) {
             throw new Error('Could not find dispatcher named "' + name + '" in dispatcher dictionary.');
         }
-        var instance = new T(element, JSON.parse(element.dataset.options || '{}'));
+        var instance = new T(element, JSON.parse(element.dataset.options || null));
         element[DISPATCHER_KEY] = instance;
         Parser._app.dispatchers.push(instance);
         return instance;
     };
 
 
-    Parser.create = function (T, element) {
+    Parser.create = function (T, element, options) {
+        // TODO: Add support for third argument `options`
         var match;
         var proto = T.prototype;
         if (proto instanceof App) {
@@ -159,6 +160,16 @@ define(['./App', './Dispatcher', './Component'], function (App, Dispatcher, Comp
         } else {
             throw new Error('Could not create component. Type not found.');
         }
+    };
+
+
+    Parser.findWithTag = function (components, tag) {
+        // TODO
+    };
+
+
+    Parser.findAllWithTag = function (components, tag) {
+        // TODO
     };
 
 
